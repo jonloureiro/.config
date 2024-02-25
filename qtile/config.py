@@ -119,7 +119,7 @@ mocha_colors = dict(
 )
 
 layout_theme = dict(
-    border_focus=mocha_colors['Mauve'],
+    border_focus=mocha_colors['Teal'],
     border_normal=mocha_colors['Mantle'],
     border_width=3,
     margin=[6, 6, 0, 0],
@@ -164,7 +164,7 @@ screens = [
                     text='',
                     foreground=mocha_colors['Base'],
                     background=mocha_colors['Teal'],
-                    padding=8,
+                    padding=9,
                 ),
                 widget.CurrentLayout(
                     font=text_fonts[1],

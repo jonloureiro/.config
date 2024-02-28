@@ -9,6 +9,7 @@ from libqtile.log_utils import logger  # tail ~/.local/share/qtile/qtile.log
 
 mod = 'mod4'
 terminal = 'kitty'
+using_spacer = True
 
 
 @hook.subscribe.startup_once
@@ -193,11 +194,6 @@ dot = widget.TextBox(
 )
 
 
-screen = qtile.screens[0]
-width = screen.width
-height = screen.height
-
-
 screens = [
     Screen(
         **wallpaper,
@@ -231,7 +227,7 @@ screens = [
                     padding=6,
                     use_mouse_wheel=False,
                 ),
-                widget.Spacer() if width >= 1920 else dot,
+                widget.Spacer() if using_spacer else dot,
                 widget.TextBox(
                     text='󰮂',
                     foreground=mocha_colors['Maroon'],
@@ -267,7 +263,7 @@ screens = [
                     measure_mem='G',
                     format='{MemUsed: .1f}/{MemTotal: .1f}'
                 ),
-                widget.Spacer() if width >= 1920 else dot,
+                widget.Spacer() if using_spacer else dot,
                 widget.Systray(padding=6),
                 dot,
                 widget.TextBox(

@@ -1,9 +1,10 @@
 import subprocess
 import os
 
-from libqtile import bar, layout, widget, hook
+from libqtile import bar, layout, widget, hook, qtile
 from libqtile.config import Click, Drag, Group, Key, Match, Screen
 from libqtile.lazy import lazy
+
 
 mod = 'mod4'
 terminal = 'kitty'
@@ -20,7 +21,9 @@ wallpaper = dict(
     wallpaper_mode='fill',
 )
 
+
 keys = [
+    Key([mod], 'Print', lazy.spawn('flatpak run org.flameshot.Flameshot gui')),
     Key([mod], 'space', lazy.widget['keyboardlayout'].next_keyboard()),
     Key([mod], 'r', lazy.spawn('xfce4-appfinder')),
     Key([mod], 'e', lazy.spawn('flatpak run org.mozilla.firefox')),
@@ -60,6 +63,7 @@ keys = [
     Key([mod, 'control'], 'r', lazy.reload_config(), desc='Reload the config'),
 ]
 
+
 mouse = [
     Drag([mod], 'Button1', lazy.window.set_position_floating(),
          start=lazy.window.get_position()),
@@ -68,10 +72,9 @@ mouse = [
     Click([mod], 'Button2', lazy.window.bring_to_front()),
 ]
 
+
 groups = [Group(i) for i in ['', '󰅬', '', '', '󰍡']]
-print(groups)
 for i, g in enumerate(groups):
-    print(i, g)
     keys.extend(
         [
             Key(
@@ -88,6 +91,7 @@ for i, g in enumerate(groups):
             ),
         ]
     )
+
 
 mocha_colors = dict(
     Rosewater='#f5e0dc',
@@ -118,6 +122,7 @@ mocha_colors = dict(
     Crust='#11111b',
 )
 
+
 layout_theme = dict(
     border_focus=mocha_colors['Teal'],
     border_normal=mocha_colors['Mantle'],
@@ -126,11 +131,11 @@ layout_theme = dict(
     margin_on_single=[6, 6, 0, 0],
     border_on_single=True,
 )
-
 layouts = [
     layout.Columns(**layout_theme, name='col'),
     layout.Max(**layout_theme),
 ]
+
 
 icon_fonts = ['NotoSerif Nerd Font']
 text_fonts = ['Ubuntu Nerd Font', 'Cousine Nerd Font']
@@ -138,6 +143,7 @@ text_style = {
     'fmt': '<b>{}</b>',
     'font': text_fonts[0]
 }
+
 
 widget_defaults = dict(
     font=text_fonts[0],
@@ -148,11 +154,18 @@ widget_defaults = dict(
 )
 extension_defaults = widget_defaults.copy()
 
+
 dot = widget.TextBox(
     text='',
     foreground=mocha_colors['Surface0'],
     padding=6
 )
+
+
+screen = qtile.screens[0]
+width = screen.width
+height = screen.height
+
 
 screens = [
     Screen(
@@ -186,7 +199,7 @@ screens = [
                     other_screen_border=mocha_colors['Surface2'],
                     padding=6,
                 ),
-                widget.Spacer(),
+                widget.Spacer() if width >= 1920 else dot,
                 widget.TextBox(
                     text='󰮂',
                     foreground=mocha_colors['Maroon'],
@@ -222,7 +235,7 @@ screens = [
                     measure_mem='G',
                     format='{MemUsed: .1f}/{MemTotal: .1f}'
                 ),
-                widget.Spacer(),
+                widget.Spacer() if width >= 1920 else dot,
                 widget.Systray(padding=6),
                 dot,
                 widget.TextBox(

@@ -1,9 +1,10 @@
-import subprocess
 import os
+import subprocess
 
-from libqtile import bar, layout, widget, hook, qtile
+from libqtile import bar, hook, layout, qtile, widget
 from libqtile.config import Click, Drag, Group, Key, Match, Screen
 from libqtile.lazy import lazy
+from libqtile.log_utils import logger  # tail ~/.local/share/qtile/qtile.log
 
 
 mod = 'mod4'
@@ -73,20 +74,50 @@ mouse = [
 ]
 
 
-groups = [Group(i) for i in ['', '󰅬', '', '', '󰍡']]
+private_group_names = ['󰌾']
+
+
+def is_private_group(qtile, group_name):
+    has_multiple_screens = len(qtile.screens) > 1
+    if not has_multiple_screens:
+        return False
+    is_to_private_group = group_name in private_group_names
+    is_second_screen = qtile.current_screen.index == 1
+    if is_to_private_group and not is_second_screen:
+        return True
+    is_private_current_group = qtile.current_group.name in private_group_names
+    has_screen_in_group = qtile.groups_map[group_name].screen is not None
+    return is_second_screen and is_private_current_group and has_screen_in_group
+
+
+@lazy.function
+def move_to_group(qtile, group_name):
+    if is_private_group(qtile, group_name):
+        return
+    qtile.groups_map[group_name].toscreen()
+
+
+@lazy.function
+def move_window_to_group(qtile, group_name):
+    switch_group = not is_private_group(qtile, group_name)
+    qtile.current_window.togroup(group_name, switch_group=switch_group)
+
+
+group_names = ['', '󰅬', '', ''] + private_group_names
+groups = [Group(i) for i in group_names]
 for i, g in enumerate(groups):
     keys.extend(
         [
             Key(
                 [mod],
                 f'{i+1}',
-                lazy.group[g.name].toscreen(),
+                move_to_group(g.name),
                 desc=f'Switch to group {g.name}',
             ),
             Key(
                 [mod, 'shift'],
                 f'{i+1}',
-                lazy.window.togroup(g.name, switch_group=True),
+                move_window_to_group(g.name),
                 desc='Switch to & move focused window to group {g.name}',
             ),
         ]
@@ -198,6 +229,7 @@ screens = [
                     this_screen_border=mocha_colors['Surface2'],
                     other_screen_border=mocha_colors['Surface2'],
                     padding=6,
+                    use_mouse_wheel=False,
                 ),
                 widget.Spacer() if width >= 1920 else dot,
                 widget.TextBox(

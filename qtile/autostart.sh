@@ -1,5 +1,7 @@
 #!/usr/bin/env sh
 
+/home/jon/.nix-profile/etc/profile.d/nix.sh
+
 dbus-update-activation-environment --all &
 
 gnome-keyring-daemon --start --components=pkcs11,secrets,ssh &

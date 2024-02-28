@@ -169,16 +169,15 @@ layouts = [
 ]
 
 
-icon_fonts = ['NotoSerif Nerd Font']
-text_fonts = ['Ubuntu Nerd Font', 'Cousine Nerd Font']
+fonts = ['Ubuntu Nerd Font', 'Cousine Nerd Font']
 text_style = {
     'fmt': '<b>{}</b>',
-    'font': text_fonts[0]
+    'font': fonts[0]
 }
 
 
 widget_defaults = dict(
-    font=text_fonts[0],
+    font=fonts[0],
     fontsize=12,
     padding=3,
     foreground=mocha_colors['Text'],
@@ -207,7 +206,7 @@ screens = [
                     padding=9,
                 ),
                 widget.CurrentLayout(
-                    font=text_fonts[1],
+                    font=fonts[1],
                     fmt='<b>{}</b>',
                     foreground=mocha_colors['Base'],
                     background=mocha_colors['Sapphire'],
